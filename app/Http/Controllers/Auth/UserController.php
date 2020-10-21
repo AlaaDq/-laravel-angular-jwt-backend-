@@ -12,36 +12,37 @@ class UserController extends Controller
 {
     public function signup(Request $request)
     {
-        // $this->validate($request, [
-        //     'name' => 'required',
-        //     'email' => 'required|email|unique:users',
-        //     'password' => 'required'
-        // ]);
-        // $user = new User([
-        //     'name' => $request->input('name'),
-        //     'email' => $request->input('email'),
-        //     'password' => bcrypt($request->input('password'))
-        // ]);
+         $this->validate($request, [
+             'name' => 'required',
+             'email' => 'required|email|unique:users',
+             'password' => 'required|min:6',
+			 'password_confirmation' => 'required|min:6',
+         ]);
+         $user = new User([
+             'name' => $request->input('name'),
+             'email' => $request->input('email'),
+             'password' => bcrypt($request->input('password'))
+         ]);
+         $user->save();
+         return response()->json([
+             'message' => 'Successfully created user!'
+         ], 201);
+
+
+        // $request->validate(
+            // [   'name' => 'required',
+                // 'email' => 'required|string|email|max:255|unique:users',
+                // 'password' => 'required|string|min:6',
+                 // 'password_confirmation' => 'required|string|min:6',
+            // ]
+        // );
+        // $user = new User();
+        // $user->name = $request->name;
+        // $user->email = $request->email;
+        // $user->password = bcrypt($request->password);
         // $user->save();
-        // return response()->json([
-        //     'message' => 'Successfully created user!'
-        // ], 201);
-
-
-        $request->validate(
-            [   'name' => 'required',
-                'email' => 'required|string|email|max:255|unique:users',
-                'password' => 'required|string|min:6',
-                // 'password_confirmation' => 'required|string|min:6',
-            ]
-        );
-        $user = new User();
-        $user->name = $request->name;
-        $user->email = $request->email;
-        $user->password = bcrypt($request->password);
-        $user->save();
-        $token = JWTAuth::attempt($request->only('email', 'password'));
-        return response()->json(['token' => "Bearer $token"]);
+        // $token = JWTAuth::attempt($request->only('email', 'password'));
+        // return response()->json(['token' => "Bearer $token"]);
     }
 
     public function signin(Request $request)
